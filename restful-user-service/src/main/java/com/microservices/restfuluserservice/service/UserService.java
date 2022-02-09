@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.microservices.restfuluserservice.model.User;
@@ -25,21 +24,10 @@ public class UserService {
     @Value("${regex.password}")
     private String regexPassword;
     
-    //@Autowired
-    //private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
 	public User registerNewUserAccount(User user) {
 		user.setCreated(new Date());
 		String token = jwtUtiService.generateToken(user.getEmail());
-		//BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-		//user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		user.setToken(token);
-		//user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		 //int strength = 10; // work factor of bcrypt
-		 //BCryptPasswordEncoder bCryptPasswordEncoder =
-		 //new BCryptPasswordEncoder(strength, new SecureRandom());
-		 //String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
-		 //user.setPassword(encodedPassword);
 		return repository.save(user);
     }
     

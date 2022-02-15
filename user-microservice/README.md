@@ -28,7 +28,7 @@ $ gradle bootRun
 ```
 
 #Run unit test
-_from project folder:_
+_from project folder: user-microservice_
 
 ```
 $ gradle test
@@ -37,7 +37,7 @@ _Path to report test:_
 
 
 ```
-$ {project_folder}/build/reports/tests/test/index.html
+$ user-microservice/build/reports/tests/test/index.html
 ```
 
 #h2-console to check the database:

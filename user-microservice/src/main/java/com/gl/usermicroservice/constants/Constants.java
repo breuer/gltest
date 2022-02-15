@@ -7,4 +7,6 @@ public class Constants {
 	public static final String REGEX_EMAIL = "^(.+)@(\\S+)$";
 	public static final String REGEX_PASSWORD = "(?=(?:\\D*\\d){2}\\D*$)(?:[^A-Z]*[A-Z]){1}[^A-Z]*$";
 	public static final String USER_ALREADY_EXISTS = "There is an account with that email address";
+	public static final String EMPTY_TOKEN = "Empty token";
+	public static final String INVALID_TOKEN = "Invalid token";
 }

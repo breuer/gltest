@@ -34,9 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.mvcMatchers("/sign-up").permitAll()
 				.mvcMatchers("/h2-console/**").permitAll()
 				.anyRequest().authenticated().and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			//.and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-			;
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		//for h2-console
 		http.headers().frameOptions().disable();
 		

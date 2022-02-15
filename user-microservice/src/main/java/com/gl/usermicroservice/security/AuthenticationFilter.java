@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,8 +20,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gl.usermicroservice.constants.Constants;
 import com.gl.usermicroservice.exception.ExceptionResponse;
 
 import io.jsonwebtoken.Claims;
@@ -52,8 +54,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			response.setContentType("application/json");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			ExceptionResponse error = new ExceptionResponse(new Date(), 
-					HttpServletResponse.SC_BAD_REQUEST, "Token empty");
-			response.getWriter().write(convertObjectToJson(error));
+					HttpServletResponse.SC_BAD_REQUEST, Constants.EMPTY_TOKEN);
+			response.getWriter().write(objectMapperBuilder().build().writeValueAsString(error));
 			return;
 		}
       
@@ -71,8 +73,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			response.setContentType("application/json");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			ExceptionResponse error = new ExceptionResponse(new Date(), 
-					HttpServletResponse.SC_BAD_REQUEST, "Invalid token");
-			response.getWriter().write(convertObjectToJson(error));
+			HttpServletResponse.SC_BAD_REQUEST, Constants.INVALID_TOKEN);
+			response.getWriter().write(objectMapperBuilder().build().writeValueAsString(error));
+			
 			return;
 		}
         if(claims != null) {
@@ -86,12 +89,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
     
-    public String convertObjectToJson(Object object) throws JsonProcessingException {
-        if (object == null) {
-            return null;
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(object);
+    public Jackson2ObjectMapperBuilder objectMapperBuilder() {
+        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
+        builder.modules(new JavaTimeModule());
+        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
+        builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return builder;
     }
 
 }
